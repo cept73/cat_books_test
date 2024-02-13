@@ -10,6 +10,11 @@ return [
         'cache' => [
             'class' => \yii\caching\FileCache::class,
         ],
+        // TODO: Включить prettyUrl и проверить корректность конфига для веб-сервера
+        'urlManager' => [
+            'enablePrettyUrl' => false,
+            'showScriptName' => false,
+        ],
     ],
     'name' => 'Cat Books',
 ];

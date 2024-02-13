@@ -6,6 +6,9 @@
 
 namespace frontend\controllers;
 
+use common\models\Book;
+use common\models\User;
+use common\repositories\BookRepository;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
@@ -83,7 +86,10 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        return $this->render('index', [
+            'books' => (new BookRepository())->getActiveBooks(),
+            'isLoggedIn' => !Yii::$app->user->isGuest
+        ]);
     }
 
     /**

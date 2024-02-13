@@ -21,6 +21,18 @@ return [
             'class' => \yii\console\controllers\FixtureController::class,
             'namespace' => 'common\fixtures',
           ],
+        'seeder' => [
+            'class' => \diecoding\seeder\SeederController::class,
+            'defaultAction' => 'seed',
+            'seederPath' => '@console/seeder',
+            'seederNamespace' => 'console\seeder',
+            'defaultSeederClass' => 'Seeder',
+            'tablesPath' => '@console/seeder/tables',
+            'tableSeederNamespace' => 'console\seeder\tables',
+            'modelNamespace' => 'common\models',
+            'templateSeederFile' => '@vendor/diecoding/yii2-seeder/src/views/Seeder.php',
+            'templateTableFile' => '@vendor/diecoding/yii2-seeder/src/views/TableSeeder.php'
+        ],
     ],
     'components' => [
         'log' => [
