@@ -9,22 +9,24 @@ use yii\web\YiiAsset;
 /**
  * Main frontend application asset bundle.
  */
-class AppAsset extends AssetBundle
+class ColorModesAsset extends AssetBundle
 {
     public $basePath = '@webroot';
 
     public $baseUrl = '@web';
 
     public $css = [
-        'css/album-theme.css',
     ];
 
     public $js = [
+        'js/color-modes.js'
+    ];
+
+    public $jsOptions = [
+        'position' => View::POS_BEGIN
     ];
 
     public $depends = [
-        ColorModesAsset::class,
-        YiiAsset::class,
         BootstrapAsset::class,
     ];
 }
