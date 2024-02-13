@@ -1,5 +1,7 @@
 # Book Store
 
+<img src="screen1.png" alt="">
+
 ## Installation notes
 
 ### To run in docker:
