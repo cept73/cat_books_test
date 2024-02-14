@@ -19,6 +19,9 @@ use yii\db\ActiveRecord;
  */
 class Book extends ActiveRecord
 {
+    /**
+     * @return array
+     */
     public function attributeLabels(): array
     {
         return [
@@ -50,6 +53,9 @@ class Book extends ActiveRecord
         ];
     }
 
+    /**
+     * @return array[]
+     */
     public function behaviors(): array
     {
         return [
@@ -79,5 +85,33 @@ class Book extends ActiveRecord
         $authorsList = $this->authors()->select('author.last_name')->column();
 
         return implode(', ', $authorsList);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath(): string
+    {
+        return $this->id . '-' . $this->slug;
+    }
+
+    /**
+     * @return array
+     * @throws InvalidConfigException
+     */
+    public function getInformation(): array
+    {
+        $informationRaw = [
+            'authors' => $this->getAuthorsLabel(),
+            'year' => $this->year_publish,
+            'isbn' => $this->isbn
+        ];
+
+        $information = [];
+        foreach ($informationRaw as $key => $value) {
+            $information[$this->getAttributeLabel($key)] = $value;
+        }
+
+        return $information;
     }
 }

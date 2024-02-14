@@ -1,6 +1,10 @@
 <?php
 
+use yii\caching\FileCache;
+use yii\rbac\DbManager;
+
 return [
+    'language' => 'ru-RU',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -8,12 +12,16 @@ return [
     'vendorPath' => dirname(__DIR__, 2) . '/vendor',
     'components' => [
         'cache' => [
-            'class' => \yii\caching\FileCache::class,
+            'class' => FileCache::class,
         ],
-        // TODO: Включить prettyUrl и проверить корректность конфига для веб-сервера
         'urlManager' => [
-            'enablePrettyUrl' => false,
+            'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => true,
+            'rules' => require('url-rules.php')
+        ],
+        'authManager' => [
+            'class' => DbManager::class,
         ],
     ],
     'name' => 'Cat Books',

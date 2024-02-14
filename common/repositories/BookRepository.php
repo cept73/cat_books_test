@@ -13,4 +13,12 @@ class BookRepository
     {
         return Book::find()->all();
     }
+
+    public function getBookById(int $id): ?Book
+    {
+        /** @var ?Book $book */
+        $book = Book::findOne(['id' => $id]);
+
+        return $book;
+    }
 }
