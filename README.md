@@ -14,7 +14,7 @@ http://localhost:20080/
 
 `init`
 
-`php yii migrate`
+`init-roles-and-users`
 
 ### To seed demo-data:
 
@@ -24,7 +24,7 @@ php yii seeder/seed author
 php yii seeder/seed author_book
 ```
 
-### To activate profile after registration
+### To activate profile after registration without email
 
 ```
 php yii user/activate {login}
