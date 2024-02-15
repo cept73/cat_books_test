@@ -2,8 +2,8 @@
 
 namespace common\services;
 
+use common\helpers\RbacPermissionHelper;
 use common\helpers\UrlHelper;
-use common\models\AuthRbac;
 use common\models\Book;
 use Yii;
 
@@ -14,22 +14,23 @@ class BookService
         $currentUser = Yii::$app->user;
 
         $buttonsRights = [
-            'view' => AuthRbac::PERMISSION_VIEW_BOOK,
-            'edit' => AuthRbac::PERMISSION_EDIT_BOOK,
-            'create' => AuthRbac::PERMISSION_CREATE_BOOK,
-            'delete' => AuthRbac::PERMISSION_DELETE_BOOK,
-            'subscribe' => AuthRbac::PERMISSION_SUBSCRIBE_AUTHOR
+            'view' => RbacPermissionHelper::VIEW_BOOK,
+            'edit' => RbacPermissionHelper::EDIT_BOOK,
+            'create' => RbacPermissionHelper::CREATE_BOOK,
+            'delete' => RbacPermissionHelper::DELETE_BOOK,
+            'subscribe' => RbacPermissionHelper::SUBSCRIBE_AUTHOR
         ];
 
         $buttons = [];
         foreach ($buttonsRights as $buttonAction => $buttonPermission) {
-            $isButtonAllowed = ($currentUser->isGuest && in_array($buttonPermission, AuthRbac::PERMISSIONS_FOR_GUEST))
-                || $currentUser->can($buttonPermission);
+            $isButtonAllowed = $currentUser->can($buttonPermission)
+                || ($currentUser->isGuest && in_array($buttonPermission, RbacPermissionHelper::LIST_FOR_GUEST));
 
             if ($isButtonAllowed) {
                 $buttons[$buttonAction] = UrlHelper::getBookActionUrl($buttonAction, $book);
             }
         }
+
         return $buttons;
     }
 }

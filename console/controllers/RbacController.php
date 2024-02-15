@@ -3,73 +3,44 @@
 
 namespace console\controllers;
 
-use common\models\AuthRbac;
+use common\facades\RbacFacade;
+use common\helpers\RbacPermissionHelper;
+use common\models\User;
 use Exception;
 use Yii;
 use yii\console\Controller;
-use yii\rbac\BaseManager;
-use yii\rbac\Role;
 
 class RbacController extends Controller
 {
-
-    private BaseManager $authManager;
-    private array $permissionsList;
-
-    public function __construct($id, $module, $config = [])
-    {
-        $this->authManager = Yii::$app->authManager;
-
-        parent::__construct($id, $module, $config);
-    }
-
     /**
      * @throws Exception
      */
     public function actionInit()
     {
-        $this->loadPermissions();
-        $authorRole = $this->createRoleWithPermissions('author', AuthRbac::PERMISSIONS_FOR_AUTHOR);
-        $this->createRoleWithPermissions('guest', AuthRbac::PERMISSIONS_FOR_GUEST);
-
-        $this->authManager->assign($authorRole, 1);
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function loadPermissions()
-    {
-        $this->permissionsList = [];
+        $authManager = Yii::$app->authManager;
 
         $permissionNames = array_unique(
-            array_merge(
-                AuthRbac::PERMISSIONS_FOR_GUEST,
-                AuthRbac::PERMISSIONS_FOR_AUTHOR
-            )
+            array_merge(RbacPermissionHelper::LIST_FOR_GUEST, RbacPermissionHelper::LIST_FOR_AUTHOR)
         );
 
+        $permissionsList = [];
         foreach ($permissionNames as $permissionName) {
-            $permission = $this->authManager->createPermission($permissionName);
+            $permission = $authManager->createPermission($permissionName);
             $permission->description = $permissionName;
-            $this->authManager->add($permission);
+            $authManager->add($permission);
 
-            $this->permissionsList[$permissionName] = $permission;
-        }
-    }
-
-    /**
-     * @throws \yii\base\Exception
-     * @throws Exception
-     */
-    private function createRoleWithPermissions($roleName, $permissionsNames): Role
-    {
-        $role = $this->authManager->createRole($roleName);
-        $this->authManager->add($role);
-        foreach ($permissionsNames as $permissionName) {
-            $this->authManager->addChild($role, $this->permissionsList[$permissionName]);
+            $permissionsList[$permissionName] = $permission;
         }
 
-        return $role;
+        $authorRole = RbacFacade::createRoleWithPermissions('author',  RbacPermissionHelper::LIST_FOR_AUTHOR, $permissionsList);
+        RbacFacade::createRoleWithPermissions('guest',  RbacPermissionHelper::LIST_FOR_GUEST, $permissionsList);
+
+        if ($authorRole = Yii::$app->authManager->getRole('author')) {
+            $userId = User::findOne(['username' => 'admin'])?->id;
+
+            if (!Yii::$app->authManager->checkAccess($userId, $authorRole->name)) {
+                $authManager->assign($authorRole, $userId);
+            }
+        }
     }
 }

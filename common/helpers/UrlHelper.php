@@ -13,22 +13,56 @@ class UrlHelper
      */
     public static function getBookViewUrl(Book $book): string
     {
-        return 'book/' . $book->getPath() . '/view';
+        return '/book/' . $book->getPath();
     }
 
-    /** @noinspection PhpDuplicateSwitchCaseBodyInspection */
+    /**
+     * @param Book $book
+     * @return string
+     */
+    public static function getBookEditUrl(Book $book): string
+    {
+        return '/book/' . $book->getPath() . '/edit';
+    }
+
+    /**
+     * @return string
+     */
+    public static function getBookCreateUrl(): string
+    {
+        return '/book/create';
+    }
+
+    /**
+     * @param Book $book
+     * @return string
+     */
+    public static function getBookDeleteUrl(Book $book): string
+    {
+        return '/book/' . $book->getPath() . '/delete';
+    }
+
+    /**
+     * @param Book $book
+     * @return string
+     */
+    public static function getBookSubscribeUrl(Book $book): string
+    {
+        return '/book/' . $book->getPath() . '/subscribe';
+    }
+
     public static function getBookActionUrl($action, Book $book): string
     {
-        // TODO: change
+        // TODO: refactor
         switch ($action) {
             case 'view': return self::getBookViewUrl($book);
-            case 'edit': return self::getBookViewUrl($book);
-            case 'delete': return self::getBookViewUrl($book);
-            case 'create': return self::getBookViewUrl($book);
-            case 'subscribe': return self::getBookViewUrl($book);
-            default:
-                throw new InvalidArgumentException();
+            case 'edit': return self::getBookEditUrl($book);
+            case 'delete': return self::getBookDeleteUrl($book);
+            case 'create': return self::getBookCreateUrl();
+            case 'subscribe': return self::getBookSubscribeUrl($book);
         }
+
+        throw new InvalidArgumentException();
     }
 
     /**
@@ -53,9 +87,9 @@ class UrlHelper
 
     /**
      * @param string $path
-     * @return mixed
+     * @return int|null
      */
-    public static function getPathIdentifier(string $path)
+    public static function getPathIdentifier(string $path): ?int
     {
         [$id, ] = self::getPathParts($path);
 

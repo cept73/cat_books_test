@@ -1,5 +1,4 @@
 <?php
-
 namespace common\models;
 
 use Yii;
@@ -19,6 +18,8 @@ use yii\db\ActiveRecord;
  */
 class Book extends ActiveRecord
 {
+    public $photo_cover_file = null;
+
     /**
      * @return array
      */
@@ -31,7 +32,8 @@ class Book extends ActiveRecord
             'year_publish' => Yii::t('app', 'Год выпуска'),
             'description' => Yii::t('app', 'Описание'),
             'isbn' => Yii::t('app', 'ISBN'),
-            'photo_cover' => Yii::t('app', 'Фото главной страницы'),
+            'photo_cover' => Yii::t('app', 'Фото главной страницы книги'),
+            'photo_cover_file' => Yii::t('app', 'Файл с фото главной страницы книги'),
         ];
     }
 
@@ -42,13 +44,19 @@ class Book extends ActiveRecord
     {
         return [
             [['title', 'year_publish', 'description', 'isbn'], 'required'],
+            ['year_publish', 'integer', 'min' => 1900, 'max' => date('Y')],
+            ['photo_cover', 'string'],
             [['isbn'], 'k-isbn'],
+            ['isbn', 'trim'],
             [
-                'photo_cover', 'file', 'extensions' => ['png', 'jpg', 'jpeg'],
+                'photo_cover_file',
+                'file',
+                'extensions' => ['png', 'jpg', 'jpeg'],
                 'mimeTypes' => ['image/jpeg', 'image/pjpeg', 'image/png'],
                 'maxSize' => 1024 * 1024 * 10,
                 'wrongMimeType' => 'Ошибка при загрузке файла, неверный тип изображения',
-                'tooBig' => 'Максимальный размер загружаемого файла - 10 МБ'
+                'tooBig' => 'Максимальный размер загружаемого файла - 10 МБ',
+                'skipOnEmpty' => true,
             ],
         ];
     }

@@ -3,7 +3,6 @@
 
 namespace console\seeder\tables;
 
-use common\models\AuthorBook;
 use diecoding\seeder\TableSeeder;
 use common\models\Book;
 use yii\helpers\StringHelper;
@@ -13,7 +12,6 @@ use yii\helpers\StringHelper;
  */
 class BookTableSeeder extends TableSeeder
 {
-    // public $truncateTable = false;
     public $locale = 'ru_RU';
 
     const COUNT = 9;
@@ -23,19 +21,22 @@ class BookTableSeeder extends TableSeeder
      */
     public function run()
     {
-        for ($i = 0; $i < self::COUNT; $i ++) {
+        for ($count = 0; $count < self::COUNT; $count ++) {
             $newBook = new Book();
 
+            $title = StringHelper::mb_ucfirst($this->faker->realTextBetween(10, 20));
+            $title = mb_substr($title, 0, -1);
+
             $newBook->setAttributes([
-                'title' => StringHelper::mb_ucfirst($this->faker->realTextBetween(10, 20)),
+                'title' => $title,
                 'year_publish' => $this->faker->year,
-                'description' => $this->faker->realText(),
+                'description' => $this->faker->realText(300),
                 'isbn' => $this->faker->isbn13(),
-                'photo_cover' => $this->faker->imageUrl(),
+                'photo_cover' => $this->faker->imageUrl(320, 200),
             ]);
 
             if (!$newBook->validate()) {
-                $i --;
+                $count --;
                 continue;
             }
 

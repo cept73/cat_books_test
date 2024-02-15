@@ -13,9 +13,6 @@ use common\models\Book;
  */
 class AuthorBookTableSeeder extends TableSeeder
 {
-    // public $truncateTable = false;
-    // public $locale = 'en_US';
-
     const MAX_AUTHORS_COUNT = 3;
 
     /**
@@ -27,13 +24,13 @@ class AuthorBookTableSeeder extends TableSeeder
         $authorsIds = Author::find()->select('id')->column();
 
         foreach ($booksIds as $bookId) {
-            for ($i = rand(1, self::MAX_AUTHORS_COUNT); $i > 0; $i --) {
+            for ($count = rand(1, self::MAX_AUTHORS_COUNT); $count > 0; $count --) {
                 $authorToBook = new AuthorBook();
                 $authorToBook->book_id = $bookId;
                 $authorToBook->author_id = $this->faker->randomElement($authorsIds);
 
                 if (!$authorToBook->validate()) {
-                    $i ++;
+                    $count ++;
                     continue;
                 }
 

@@ -11,11 +11,15 @@ use common\services\BookService;
 ?>
 
 <div class="col">
-    <div class="card shadow-sm">
-        <img src="<?= $book->photo_cover ?>" title="<?= $book->title ?>"  alt="" />
+    <div class="card shadow-sm mb-5">
+        <div class="card-cover">
+            <a href="<?= UrlHelper::getBookViewUrl($book) ?>">
+                <img src="<?= $book->photo_cover ?>" title="<?= $book->title ?>"  alt="" class="w-100" />
+            </a>
+        </div>
         <div class="card-body">
             <h2 class="card-text">
-                <a href="<?= UrlHelper::getBookViewUrl($book) ?>">
+                <a href="<?= UrlHelper::getBookViewUrl($book) ?>" class="text-decoration-none">
                     <?= $book->title ?>
                 </a>
             </h2>

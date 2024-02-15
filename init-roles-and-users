@@ -1,0 +1,9 @@
+#!/bin/bash
+
+php yii migrate
+php yii seeder/seed book
+php yii seeder/seed author
+php yii seeder/seed author_book
+php yii user/create admin 123456 no-reply@google.com
+php yii migrate --migrationPath=@yii/rbac/migrations
+php yii rbac/init

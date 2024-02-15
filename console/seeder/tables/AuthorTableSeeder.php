@@ -11,7 +11,6 @@ use common\models\Author;
  */
 class AuthorTableSeeder extends TableSeeder
 {
-    // public $truncateTable = false;
     public $locale = 'ru_RU';
 
     const COUNT = BookTableSeeder::COUNT * AuthorBookTableSeeder::MAX_AUTHORS_COUNT;
@@ -21,7 +20,7 @@ class AuthorTableSeeder extends TableSeeder
      */
     public function run()
     {
-        for ($i = 0; $i < self::COUNT; $i++) {
+        for ($count = 0; $count < self::COUNT; $count++) {
             $author = new Author();
             $author->setAttributes([
                 'first_name' => $this->faker->firstName,
@@ -30,7 +29,7 @@ class AuthorTableSeeder extends TableSeeder
             ]);
 
             if (!$author->validate()) {
-                $i --;
+                $count --;
                 continue;
             }
 

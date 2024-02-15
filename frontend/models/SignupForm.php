@@ -2,6 +2,7 @@
 
 namespace frontend\models;
 
+use common\factories\UserFactory;
 use Yii;
 use yii\base\Model;
 use common\models\User;
@@ -48,13 +49,8 @@ class SignupForm extends Model
         if (!$this->validate()) {
             return null;
         }
-        
-        $user = new User();
-        $user->username = $this->username;
-        $user->email = $this->email;
-        $user->setPassword($this->password);
-        $user->generateAuthKey();
-        $user->generateEmailVerificationToken();
+
+        $user = (new UserFactory())->createByLoginPasswordEmail($this->username, $this->password, $this->email);
 
         return $user->save() && $this->sendEmail($user);
     }
