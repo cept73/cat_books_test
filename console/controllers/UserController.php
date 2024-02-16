@@ -5,6 +5,7 @@ namespace console\controllers;
 
 use common\factories\UserFactory;
 use common\models\User;
+use common\repositories\UserRepository;
 use yii\console\Controller;
 
 class UserController extends Controller
@@ -30,6 +31,11 @@ class UserController extends Controller
      */
     public function actionCreate(string $login, string $password, string $email)
     {
+        if ((new UserRepository())->getUserByLogin($login) !== null) {
+            print "User $login already exists" . PHP_EOL;
+            return;
+        }
+
         $user = (new UserFactory())->createByLoginPasswordEmail($login, $password, $email);
         $user->status = User::STATUS_ACTIVE;
 

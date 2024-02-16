@@ -3,6 +3,7 @@
 
 namespace console\seeder\tables;
 
+use common\helpers\IsbnHelper;
 use diecoding\seeder\TableSeeder;
 use common\models\Book;
 use yii\helpers\StringHelper;
@@ -24,14 +25,14 @@ class BookTableSeeder extends TableSeeder
         for ($count = 0; $count < self::COUNT; $count ++) {
             $newBook = new Book();
 
-            $title = StringHelper::mb_ucfirst($this->faker->realTextBetween(10, 20));
-            $title = mb_substr($title, 0, -1);
+            $titleWithDot = StringHelper::mb_ucfirst($this->faker->realTextBetween(10, 20));
+            $title = mb_substr($titleWithDot, 0, -1);
 
             $newBook->setAttributes([
                 'title' => $title,
                 'year_publish' => $this->faker->year,
                 'description' => $this->faker->realText(300),
-                'isbn' => $this->faker->isbn13(),
+                'isbn' => ISBNHelper::convertToISBN13($this->faker->isbn13()),
                 'photo_cover' => $this->faker->imageUrl(320, 200),
             ]);
 

@@ -1,4 +1,6 @@
 <?php
+/** @noinspection PhpUnused */
+
 namespace common\models;
 
 use Yii;
@@ -18,7 +20,7 @@ use yii\db\ActiveRecord;
  */
 class Book extends ActiveRecord
 {
-    public $photo_cover_file = null;
+    public ?string $photo_cover_file = null;
 
     /**
      * @return array
@@ -48,6 +50,7 @@ class Book extends ActiveRecord
             ['photo_cover', 'string'],
             [['isbn'], 'k-isbn'],
             ['isbn', 'trim'],
+            ['isbn', 'unique', 'message'=>'Book with this {attribute} already exists'],
             [
                 'photo_cover_file',
                 'file',
@@ -73,6 +76,13 @@ class Book extends ActiveRecord
                 'slugAttribute' => 'slug',
             ],
         ];
+    }
+
+    public function beforeDelete(): bool
+    {
+        AuthorBook::deleteAll(['book_id' => $this->id]);
+
+        return parent::beforeDelete();
     }
 
     /**

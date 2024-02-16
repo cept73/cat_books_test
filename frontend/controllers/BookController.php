@@ -3,13 +3,14 @@
 
 namespace frontend\controllers;
 
-use common\helpers\FileHelper;
+use common\facades\FileFacade;
 use common\helpers\UrlHelper;
 use common\models\Book;
 use common\repositories\BookRepository;
 use Exception;
 use Throwable;
 use Yii;
+use yii\db\StaleObjectException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -22,11 +23,7 @@ class BookController extends Controller
      */
     public function actionView(string $path): string
     {
-        $id = UrlHelper::getPathIdentifier($path);
-
-        if (empty($id) || ($book = (new BookRepository())->getBookById($id)) === null) {
-            throw new NotFoundHttpException('Book not found');
-        }
+        $book = $this->getBookByPathOrFail($path);
 
         return $this->render('view', [
             'book' => $book
@@ -43,17 +40,13 @@ class BookController extends Controller
 
         $postData = Yii::$app->request->post();
         if (!empty($postData) && $book->load($postData)) {
+            /** @var ?UploadedFile $uploadedFile */
             $uploadedFile = UploadedFile::getInstance($book, 'photo_cover_file');
 
             if ($book->validate()) {
-                /** @var ?UploadedFile $uploadedFile */
                 if ($uploadedFile) {
                     $dirName = '/assets/books/' . Yii::$app->user->id . '/';
-                    $uploadPath = Yii::getAlias('@frontend/web' . $dirName);
-                    \yii\helpers\FileHelper::createDirectory($uploadPath);
-                    $fileName = FileHelper::getUniqueFileName($uploadedFile);
-                    $filePath = $uploadPath . $fileName;
-                    $uploadedFile->saveAs($filePath);
+                    $fileName = FileFacade::uploadFileTo($uploadedFile, "@frontend/web$dirName");
 
                     $book->photo_cover = $dirName . $fileName;
                 }
@@ -61,7 +54,7 @@ class BookController extends Controller
                 try {
                     $book->save();
 
-                    // TODO: connect to author
+                    // TODO: connect to author?
                     /* if (false === (new AuthorBookService())->setAuthor($book, \Yii::$app->user)) {
                         throw new \yii\base\Exception();
                     }*/
@@ -81,5 +74,35 @@ class BookController extends Controller
         }
 
         return $this->render('create', ['book' => $book]);
+    }
+
+    /**
+     * @param string $path
+     * @return Response
+     * @throws NotFoundHttpException
+     * @throws Throwable
+     * @throws StaleObjectException
+     */
+    public function actionDelete(string $path): Response
+    {
+        $book = $this->getBookByPathOrFail($path);
+
+        $book->delete();
+
+        return $this->redirect(UrlHelper::getHomePage());
+    }
+
+    /**
+     * @throws NotFoundHttpException
+     */
+    private function getBookByPathOrFail(string $path): Book
+    {
+        $id = UrlHelper::getPathIdentifier($path);
+
+        if (empty($id) || ($book = (new BookRepository())->getBookById($id)) === null) {
+            throw new NotFoundHttpException('Book not found');
+        }
+
+        return $book;
     }
 }

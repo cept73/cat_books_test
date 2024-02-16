@@ -8,6 +8,7 @@
  * @noinspection PhpUnhandledExceptionInspection
  */
 
+use common\helpers\IsbnHelper;
 use common\models\Book;
 use yii\web\View;
 use yii\bootstrap5\ActiveForm;
@@ -15,7 +16,11 @@ use yii\bootstrap5\Html;
 
 $this->title = Yii::t('app', 'Добавление книги');
 
-$isbnLabel = Yii::t('app', 'For example: {isbn}', ['isbn' => '978-3-16-148410-0']);
+// '978-3-16-148410-0'
+$randomIsbn13Number = (new \Faker\Generator())->isbn13();
+$isbnLabel = Yii::t('app', 'For example: {isbn}', [
+    'isbn' => IsbnHelper::convertToISBN13($randomIsbn13Number)
+]);
 
 ?>
 

@@ -18,6 +18,9 @@ class RbacController extends Controller
     public function actionInit()
     {
         $authManager = Yii::$app->authManager;
+        if (Yii::$app->authManager->getRole('author') !== null) {
+            return;
+        }
 
         $permissionNames = array_unique(
             array_merge(RbacPermissionHelper::LIST_FOR_GUEST, RbacPermissionHelper::LIST_FOR_AUTHOR)
@@ -35,12 +38,10 @@ class RbacController extends Controller
         $authorRole = RbacFacade::createRoleWithPermissions('author',  RbacPermissionHelper::LIST_FOR_AUTHOR, $permissionsList);
         RbacFacade::createRoleWithPermissions('guest',  RbacPermissionHelper::LIST_FOR_GUEST, $permissionsList);
 
-        if ($authorRole = Yii::$app->authManager->getRole('author')) {
-            $userId = User::findOne(['username' => 'admin'])?->id;
+        $userId = User::findOne(['username' => 'admin'])?->id;
 
-            if (!Yii::$app->authManager->checkAccess($userId, $authorRole->name)) {
-                $authManager->assign($authorRole, $userId);
-            }
+        if (!Yii::$app->authManager->checkAccess($userId, $authorRole->name)) {
+            $authManager->assign($authorRole, $userId);
         }
     }
 }

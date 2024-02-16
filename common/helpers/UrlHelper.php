@@ -7,13 +7,23 @@ use yii\base\InvalidArgumentException;
 
 class UrlHelper
 {
+    public const BASE_URL_BOOK = '/book/';
+    
+    /**
+     * @return string
+     */
+    public static function getHomePage(): string
+    {
+        return '/';
+    }
+
     /**
      * @param Book $book
      * @return string
      */
     public static function getBookViewUrl(Book $book): string
     {
-        return '/book/' . $book->getPath();
+        return self::BASE_URL_BOOK . $book->getPath();
     }
 
     /**
@@ -22,7 +32,7 @@ class UrlHelper
      */
     public static function getBookEditUrl(Book $book): string
     {
-        return '/book/' . $book->getPath() . '/edit';
+        return self::BASE_URL_BOOK . $book->getPath() . '/edit';
     }
 
     /**
@@ -39,7 +49,7 @@ class UrlHelper
      */
     public static function getBookDeleteUrl(Book $book): string
     {
-        return '/book/' . $book->getPath() . '/delete';
+        return self::BASE_URL_BOOK . $book->getPath() . '/delete';
     }
 
     /**
@@ -48,7 +58,7 @@ class UrlHelper
      */
     public static function getBookSubscribeUrl(Book $book): string
     {
-        return '/book/' . $book->getPath() . '/subscribe';
+        return self::BASE_URL_BOOK . $book->getPath() . '/subscribe';
     }
 
     public static function getBookActionUrl($action, Book $book): string
