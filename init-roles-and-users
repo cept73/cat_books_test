@@ -1,9 +1,17 @@
 #!/bin/bash
 
-php yii migrate
-php yii seeder/seed book
-php yii seeder/seed author
-php yii seeder/seed author_book
-php yii user/create admin 123456 no-reply@google.com
-php yii migrate --migrationPath=@yii/rbac/migrations
-php yii rbac/init
+PHP=php
+
+$PHP -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+$PHP composer-setup.php
+$PHP -r "unlink('composer-setup.php');"
+$PHP composer.phar install
+$PHP composer.phar dump-autoload
+
+$PHP yii migrate
+$PHP yii seeder/seed book
+$PHP yii seeder/seed author
+$PHP yii seeder/seed author_book
+$PHP yii user/create admin 123456 no-reply@google.com
+$PHP yii migrate --migrationPath=@yii/rbac/migrations
+$PHP yii rbac/init
