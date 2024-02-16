@@ -18,11 +18,7 @@ http://localhost:20080/
 
 ### To seed demo-data:
 
-```
-php yii seeder/seed book 
-php yii seeder/seed author 
-php yii seeder/seed author_book
-```
+`init-demo-data`
 
 ### To activate profile after registration without email
 

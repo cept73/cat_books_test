@@ -1,0 +1,7 @@
+#!/bin/bash
+
+PHP=php
+
+$PHP yii seeder/seed book
+$PHP yii seeder/seed author
+$PHP yii seeder/seed author_book
