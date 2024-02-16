@@ -12,13 +12,13 @@ http://localhost:20080/
 
 ### To set up:
 
-`init`
+`./init`
 
-`init-roles-and-users`
+`./init-roles-and-users`
 
 ### To seed demo-data:
 
-`init-demo-data`
+`./init-demo-data`
 
 ### To activate profile after registration without email
 
