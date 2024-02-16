@@ -20,7 +20,7 @@ class m240213_165742_create_book_table extends Migration
             'title' => $this->string(512),
             'year_publish' => $this->integer()->unsigned(),
             'description' => $this->text(),
-            'isbn' => $this->string()->unique(),
+            'isbn' => $this->string(18)->unique(),
             'photo_cover' => $this->string(512),
         ], DbHelper::dbOptions());
     }
