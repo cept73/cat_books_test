@@ -11,7 +11,7 @@ class BookRepository
      */
     public function getActiveBooks(): array
     {
-        return Book::find()->all();
+        return Book::find()->orderBy(['id' => SORT_DESC])->all();
     }
 
     public function getBookById(int $id): ?Book

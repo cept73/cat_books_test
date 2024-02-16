@@ -19,7 +19,7 @@ use common\services\BookService;
         </div>
         <div class="card-body">
             <h2 class="card-text">
-                <a href="<?= UrlHelper::getBookViewUrl($book) ?>" class="text-decoration-none">
+                <a href="<?= UrlHelper::getBookViewUrl($book) ?>">
                     <?= $book->title ?>
                 </a>
             </h2>
