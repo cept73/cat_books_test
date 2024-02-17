@@ -15,9 +15,8 @@ class BookService
 
         $buttonsRights = [
             'view' => RbacPermissionHelper::VIEW_BOOK,
-            // TODO: edit action
-            // 'edit' => RbacPermissionHelper::EDIT_BOOK,
-            'delete' => RbacPermissionHelper::DELETE_BOOK,
+            'edit' => RbacPermissionHelper::getChangeBookPermission($book),
+            'delete' => RbacPermissionHelper::getChangeBookPermission($book),
             'subscribe' => RbacPermissionHelper::SUBSCRIBE_AUTHOR
         ];
 

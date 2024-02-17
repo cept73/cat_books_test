@@ -14,16 +14,18 @@ use yii\web\View;
 use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
-$this->title = Yii::t('app', 'Добавление книги');
+$this->title = Yii::t('app', 'Изменение книги');
 
-$isbnLabel = Yii::t('app', 'For example: {isbn}', ['isbn' => $randomIsbn13Number]);
+$isbnLabel = Yii::t('app', 'For example: {isbn}', [
+    'isbn' => $randomIsbn13Number
+]);
 
 ?>
 
 <?= $this->render('/site/_partial/go-back', ['backUrl' => $backUrl]) ?>
 
 <div class="my-5 offset-lg-3 col-lg-6">
-    <h1><?= Html::encode(Yii::t('app', 'Добавление книги')) ?></h1>
+    <h1><?= Html::encode(Yii::t('app', 'Изменение книги')) ?></h1>
 
     <?php $form = ActiveForm::begin(['id' => 'create-form']); ?>
 
@@ -39,8 +41,8 @@ $isbnLabel = Yii::t('app', 'For example: {isbn}', ['isbn' => $randomIsbn13Number
 
     <div class="form-group">
         <?= Html::submitButton(
-                Yii::t('app', 'Добавление книги'),
-                ['class' => 'btn btn-primary btn-block', 'name' => 'login-button']
+            Yii::t('app', 'Сохранить'),
+            ['class' => 'btn btn-primary btn-block', 'name' => 'login-button']
         ) ?>
     </div>
 

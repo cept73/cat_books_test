@@ -3,6 +3,10 @@
 
 namespace common\models;
 
+use common\exceptions\AccessDeniedException;
+use common\helpers\RbacPermissionHelper;
+use common\services\RbacService;
+use Exception;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\behaviors\SluggableBehavior;
@@ -78,8 +82,43 @@ class Book extends ActiveRecord
         ];
     }
 
+    /**
+     * @throws Exception
+     */
+    public function beforeSave($insert): bool
+    {
+        if (!$this->isNewRecord) {
+            if (!Yii::$app->user->can(RbacPermissionHelper::getChangeBookPermission($this))) {
+                throw new AccessDeniedException();
+            }
+        }
+
+        return parent::beforeSave($insert);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($insert) {
+            $userId = Yii::$app->user->id;
+            (new RbacService())->createPermissionToChangeBook($this, $userId);
+        }
+
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * @throws AccessDeniedException
+     */
     public function beforeDelete(): bool
     {
+        $currentUser = Yii::$app->user;
+        if (!$currentUser->can(RbacPermissionHelper::getChangeBookPermission($this))) {
+            throw new AccessDeniedException();
+        }
+
         AuthorBook::deleteAll(['book_id' => $this->id]);
 
         return parent::beforeDelete();

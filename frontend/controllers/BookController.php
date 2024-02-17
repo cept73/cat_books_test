@@ -5,11 +5,13 @@ namespace frontend\controllers;
 
 use common\exceptions\AccessDeniedException;
 use common\facades\FileFacade;
+use common\helpers\IsbnHelper;
 use common\helpers\RbacPermissionHelper;
 use common\helpers\UrlHelper;
 use common\models\Book;
 use common\repositories\BookRepository;
 use Exception;
+use Faker\Generator;
 use Throwable;
 use Yii;
 use yii\db\StaleObjectException;
@@ -27,7 +29,8 @@ class BookController extends BaseController
         $book = $this->getBookByPathOrFail($path);
 
         return $this->render('view', [
-            'book' => $book
+            'book' => $book,
+            'backUrl' => UrlHelper::getHomePage(),
         ]);
     }
 
@@ -37,12 +40,63 @@ class BookController extends BaseController
      */
     public function actionCreate(): Response|string
     {
-        if (!Yii::$app->user->can(RbacPermissionHelper::CREATE_BOOK)) {
+        $book = new Book();
+
+        $currentUser = Yii::$app->user;
+        if (!$currentUser->can(RbacPermissionHelper::CREATE_BOOK)) {
             throw new AccessDeniedException();
         }
 
-        $book = new Book();
+        return $this->changeBook($book, 'create');
+    }
 
+    /**
+     * @throws NotFoundHttpException
+     * @throws AccessDeniedException
+     */
+    public function actionEdit(string $path): Response|string
+    {
+        $book = $this->getBookByPathOrFail($path);
+
+        $currentUser = Yii::$app->user;
+        if (!$currentUser->can(RbacPermissionHelper::getChangeBookPermission($book))) {
+            throw new AccessDeniedException();
+        }
+
+        return $this->changeBook($book, 'edit');
+    }
+
+    /**
+     * @param string $path
+     * @return Response
+     * @throws NotFoundHttpException
+     * @throws Throwable
+     * @throws StaleObjectException
+     */
+    public function actionDelete(string $path): Response
+    {
+        $book = $this->getBookByPathOrFail($path);
+        $book->delete();
+
+        return $this->redirect(UrlHelper::getHomePage());
+    }
+
+    /**
+     * @throws NotFoundHttpException
+     */
+    private function getBookByPathOrFail(string $path): Book
+    {
+        $id = UrlHelper::getPathIdentifier($path);
+
+        if (empty($id) || ($book = (new BookRepository())->getBookById($id)) === null) {
+            throw new NotFoundHttpException('Book not found');
+        }
+
+        return $book;
+    }
+
+    private function changeBook($book, $viewFile): Response|string
+    {
         $postData = Yii::$app->request->post();
         if (!empty($postData) && $book->load($postData)) {
             /** @var ?UploadedFile $uploadedFile */
@@ -68,7 +122,7 @@ class BookController extends BaseController
                 } catch (Throwable $exception) {
                     $errorMessage = $exception->getMessage();
                     if (YII_DEBUG && $errorMessage) {
-                        Yii::$app->session->setFlash('error', $errorMessage);
+                        Yii::$app->session->setFlash('error', $errorMessage . ':' . $exception->getTraceAsString());
                     }
                 }
 
@@ -78,73 +132,12 @@ class BookController extends BaseController
             Yii::$app->session->setFlash('error', 'There was an error sending your message.');
         }
 
-        return $this->render('create', ['book' => $book]);
-    }
+        $randomIsbn13Number = IsbnHelper::convertToISBN13((new Generator())->isbn13());
 
-    /**
-     * @throws AccessDeniedException
-     * @throws NotFoundHttpException
-     */
-    public function actionEdit(string $path): Response|string
-    {
-        if (!Yii::$app->user->can(RbacPermissionHelper::EDIT_BOOK)) {
-            throw new AccessDeniedException();
-        }
-
-        $book = $this->getBookByPathOrFail($path);
-
-        $postData = Yii::$app->request->post();
-        if (!empty($postData) && $book->load($postData)) {
-            if ($book->validate()) {
-                try {
-                    $book->save();
-                    Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
-                } catch (Throwable $exception) {
-                    $errorMessage = $exception->getMessage();
-                    if (YII_DEBUG && $errorMessage) {
-                        Yii::$app->session->setFlash('error', $errorMessage);
-                    }
-                }
-
-                return $this->redirect(UrlHelper::getBookViewUrl($book));
-            }
-        }
-
-        // TODO: Edit book page view
-        return $this->render('edit', ['book' => $book]);
-    }
-
-    /**
-     * @param string $path
-     * @return Response
-     * @throws NotFoundHttpException
-     * @throws Throwable
-     * @throws StaleObjectException
-     */
-    public function actionDelete(string $path): Response
-    {
-        if (!Yii::$app->user->can(RbacPermissionHelper::DELETE_BOOK)) {
-            throw new AccessDeniedException();
-        }
-
-        $book = $this->getBookByPathOrFail($path);
-
-        $book->delete();
-
-        return $this->redirect(UrlHelper::getHomePage());
-    }
-
-    /**
-     * @throws NotFoundHttpException
-     */
-    private function getBookByPathOrFail(string $path): Book
-    {
-        $id = UrlHelper::getPathIdentifier($path);
-
-        if (empty($id) || ($book = (new BookRepository())->getBookById($id)) === null) {
-            throw new NotFoundHttpException('Book not found');
-        }
-
-        return $book;
+        return $this->render($viewFile, [
+            'book' => $book,
+            'randomIsbn13Number' => $randomIsbn13Number,
+            'backUrl' => UrlHelper::getHomePage()
+        ]);
     }
 }
