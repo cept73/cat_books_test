@@ -125,7 +125,7 @@ class BookController extends BaseController
                         throw new \yii\base\Exception();
                     }*/
 
-                    Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
+                    Yii::$app->session->setFlash('success', 'Книга сохранена успешно');
                 } catch (Throwable $exception) {
                     $errorMessage = $exception->getMessage();
                     if (YII_DEBUG && $errorMessage) {
