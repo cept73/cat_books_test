@@ -10,10 +10,10 @@ use common\helpers\RbacPermissionHelper;
 use common\helpers\UrlHelper;
 use common\models\Book;
 use common\repositories\BookRepository;
-use Exception;
 use Faker\Generator;
 use Throwable;
 use Yii;
+use yii\base\Exception;
 use yii\db\StaleObjectException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -35,7 +35,8 @@ class BookController extends BaseController
     }
 
     /**
-     * @throws NotFoundHttpException
+     * @return Response|string
+     * @throws AccessDeniedException
      * @throws Exception
      */
     public function actionCreate(): Response|string
@@ -51,8 +52,11 @@ class BookController extends BaseController
     }
 
     /**
-     * @throws NotFoundHttpException
+     * @param string $path
+     * @return Response|string
      * @throws AccessDeniedException
+     * @throws Exception
+     * @throws NotFoundHttpException
      */
     public function actionEdit(string $path): Response|string
     {
@@ -95,6 +99,9 @@ class BookController extends BaseController
         return $book;
     }
 
+    /**
+     * @throws Exception
+     */
     private function changeBook($book, $viewFile): Response|string
     {
         $postData = Yii::$app->request->post();
