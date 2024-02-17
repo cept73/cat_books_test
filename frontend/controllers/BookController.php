@@ -9,7 +9,9 @@ use common\helpers\IsbnHelper;
 use common\helpers\RbacPermissionHelper;
 use common\helpers\UrlHelper;
 use common\models\Book;
+use common\repositories\AuthorRepository;
 use common\repositories\BookRepository;
+use common\services\AuthorBookService;
 use Faker\Generator;
 use Throwable;
 use Yii;
@@ -85,6 +87,16 @@ class BookController extends BaseController
         return $this->redirect(UrlHelper::getHomePage());
     }
 
+    public function actionReport(): string
+    {
+        $authors = (new AuthorBookService())->getReport();
+
+        return $this->render('report', [
+            'authors' => $authors,
+            'backUrl' => UrlHelper::getHomePage()
+        ]);
+    }
+
     /**
      * @throws NotFoundHttpException
      */
@@ -100,30 +112,29 @@ class BookController extends BaseController
     }
 
     /**
+     * @param Book $book
+     * @param string $viewFile
+     * @return Response|string
      * @throws Exception
      */
-    private function changeBook($book, $viewFile): Response|string
+    private function changeBook(Book $book, string $viewFile): Response|string
     {
         $postData = Yii::$app->request->post();
         if (!empty($postData) && $book->load($postData)) {
             /** @var ?UploadedFile $uploadedFile */
-            $uploadedFile = UploadedFile::getInstance($book, 'photo_cover_file');
+            $uploadedFile = UploadedFile::getInstance($book, '_photo_cover_file');
 
             if ($book->validate()) {
-                if ($uploadedFile) {
-                    $dirName = '/assets/books/' . Yii::$app->user->id . '/';
-                    $fileName = FileFacade::uploadFileTo($uploadedFile, "@frontend/web$dirName");
-
-                    $book->photo_cover = $dirName . $fileName;
-                }
-
                 try {
-                    $book->save();
+                    if ($uploadedFile) {
+                        $dirName = '/assets/books/' . Yii::$app->user->id . '/';
+                        $fileName = FileFacade::uploadFileTo($uploadedFile, "@frontend/web$dirName");
 
-                    // TODO: connect to author?
-                    /* if (false === (new AuthorBookService())->setAuthor($book, \Yii::$app->user)) {
-                        throw new \yii\base\Exception();
-                    }*/
+                        $book->_photo_cover = $dirName . $fileName;
+                    }
+
+                    $book->save();
+                    (new AuthorBookService())->updateAuthors($book);
 
                     Yii::$app->session->setFlash('success', 'Книга сохранена успешно');
                 } catch (Throwable $exception) {
@@ -141,10 +152,13 @@ class BookController extends BaseController
 
         $randomIsbn13Number = IsbnHelper::convertToISBN13((new Generator())->isbn13());
 
+        $authorsList = (new AuthorRepository())->getAuthorsList();
+
         return $this->render($viewFile, [
             'book' => $book,
             'randomIsbn13Number' => $randomIsbn13Number,
-            'backUrl' => UrlHelper::getHomePage()
+            'backUrl' => UrlHelper::getHomePage(),
+            'authorsList' => $authorsList,
         ]);
     }
 }

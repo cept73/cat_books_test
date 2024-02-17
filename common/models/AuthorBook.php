@@ -11,4 +11,14 @@ use yii\db\ActiveRecord;
  */
 class AuthorBook extends ActiveRecord
 {
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($insert) {
+            $subscribers = Subscriber::findAll(['author_id' => $this->author_id]);
+
+            // TODO: post to subscribers
+        }
+
+        parent::afterSave($insert, $changedAttributes);
+    }
 }

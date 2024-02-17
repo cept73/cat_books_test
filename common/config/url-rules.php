@@ -3,7 +3,7 @@
 /** @noinspection RequiredAttributes */
 return [
     '' => 'site/index',
-    'book/create' => 'book/create',
+    'book/<action:create|report>' => 'book/<action>',
     'book/<path>' => 'book/view',
     'book/<path>/<action>' => 'book/<action>',
     'site/<action>' => 'site/<action>',

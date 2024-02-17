@@ -6,6 +6,7 @@
  * @var Book $book
  * @var string $randomIsbn13Number
  * @var string $backUrl
+ * @var array $authorsList
  * @noinspection PhpUnhandledExceptionInspection
  */
 
@@ -25,24 +26,5 @@ $isbnLabel = Yii::t('app', 'For example: {isbn}', ['isbn' => $randomIsbn13Number
 <div class="my-5 offset-lg-3 col-lg-6">
     <h1><?= Html::encode(Yii::t('app', 'Добавление книги')) ?></h1>
 
-    <?php $form = ActiveForm::begin(['id' => 'create-form']); ?>
-
-    <?= $form->field($book, 'title')->textInput(['autofocus' => true]) ?>
-
-    <?= $form->field($book, 'year_publish')->textInput() ?>
-
-    <?= $form->field($book, 'description')->textInput() ?>
-
-    <?= $form->field($book, 'isbn')->textInput()->hint($isbnLabel) ?>
-
-    <?= $form->field($book, 'photo_cover_file')->fileInput() ?>
-
-    <div class="form-group">
-        <?= Html::submitButton(
-                Yii::t('app', 'Добавление книги'),
-                ['class' => 'btn btn-primary btn-block', 'name' => 'login-button']
-        ) ?>
-    </div>
-
-    <?php ActiveForm::end(); ?>
+    <?= $this->render('_partial/change-form', ['book' => $book, 'isbnLabel' => $isbnLabel, 'authorsList' => $authorsList]) ?>
 </div>

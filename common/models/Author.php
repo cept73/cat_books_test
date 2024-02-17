@@ -30,4 +30,9 @@ class Author extends ActiveRecord
             // TODO: Добавить ограничения, в т.ч. по размерам значений
         ];
     }
+
+    public function getFullName(): string
+    {
+        return $this->last_name . ' ' . $this->middle_name . ' ' . $this->first_name;
+    }
 }

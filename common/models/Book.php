@@ -20,11 +20,13 @@ use yii\db\ActiveRecord;
  * @property int $year_publish
  * @property string $description
  * @property string $isbn
- * @property string $photo_cover
+ * @property string $_photo_cover
+ * @property string $_authors
  */
 class Book extends ActiveRecord
 {
-    public ?string $photo_cover_file = null;
+    public ?string $_photo_cover_file = null;
+    public ?array $_authors = null;
 
     /**
      * @return array
@@ -39,7 +41,8 @@ class Book extends ActiveRecord
             'description' => Yii::t('app', 'Описание'),
             'isbn' => Yii::t('app', 'ISBN'),
             'photo_cover' => Yii::t('app', 'Фото главной страницы книги'),
-            'photo_cover_file' => Yii::t('app', 'Файл с фото главной страницы книги'),
+            '_photo_cover_file' => Yii::t('app', 'Файл с фото главной страницы книги'),
+            '_authors' => Yii::t('app', 'Авторы'),
         ];
     }
 
@@ -56,7 +59,7 @@ class Book extends ActiveRecord
             ['isbn', 'trim'],
             ['isbn', 'unique', 'message'=>'Book with this {attribute} already exists'],
             [
-                'photo_cover_file',
+                '_photo_cover_file',
                 'file',
                 'extensions' => ['png', 'jpg', 'jpeg'],
                 'mimeTypes' => ['image/jpeg', 'image/pjpeg', 'image/png'],
@@ -65,6 +68,7 @@ class Book extends ActiveRecord
                 'tooBig' => 'Максимальный размер загружаемого файла - 10 МБ',
                 'skipOnEmpty' => true,
             ],
+            ['_authors', 'each', 'rule' => ['integer']],
         ];
     }
 
@@ -87,10 +91,11 @@ class Book extends ActiveRecord
      */
     public function beforeSave($insert): bool
     {
-        if (!$this->isNewRecord) {
-            if (!Yii::$app->user->can(RbacPermissionHelper::getChangeBookPermission($this))) {
-                throw new AccessDeniedException();
-            }
+        if (
+            !$this->isNewRecord
+            && !Yii::$app->user->can(RbacPermissionHelper::getChangeBookPermission($this))
+        ) {
+            throw new AccessDeniedException();
         }
 
         return parent::beforeSave($insert);
@@ -102,8 +107,7 @@ class Book extends ActiveRecord
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            $userId = Yii::$app->user->id;
-            (new RbacService())->createPermissionToChangeBook($this, $userId);
+            (new RbacService())->createPermissionToChangeBook($this, Yii::$app->user->id);
         }
 
         parent::afterSave($insert, $changedAttributes);
