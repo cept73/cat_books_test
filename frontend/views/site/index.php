@@ -10,7 +10,7 @@ use common\helpers\UrlHelper;
 use common\models\Book;
 use yii\web\View;
 
-$this->title = 'Main page';
+$this->title = 'Pet Books';
 ?>
     <div class="p-5 mb-4 bg-transparent rounded-3">
         <div class="container-fluid py-5 text-center">

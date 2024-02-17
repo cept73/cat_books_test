@@ -24,5 +24,5 @@ return [
             'class' => DbManager::class,
         ],
     ],
-    'name' => 'Cat Books',
+    'name' => 'Pet Books',
 ];
