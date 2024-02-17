@@ -13,7 +13,7 @@ use yii\web\View;
 $this->title = Yii::t('app', 'Просмотр книги: {title}', ['title' => $book->title]);
 ?>
 
-<?= $this->render('_partial/go-back') ?>
+<?= $this->render('/site/_partial/go-back') ?>
 
 <div class="bg-transparent rounded-3">
     <div class="container-fluid py-5">

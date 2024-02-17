@@ -13,7 +13,6 @@ use Yii;
 use yii\base\InvalidArgumentException;
 use yii\captcha\CaptchaAction;
 use yii\web\BadRequestHttpException;
-use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
@@ -21,13 +20,12 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
-use yii\web\ErrorAction;
 use yii\web\Response;
 
 /**
  * Site controller
  */
-class SiteController extends Controller
+class SiteController extends BaseController
 {
     /**
      * {@inheritdoc}
@@ -67,9 +65,6 @@ class SiteController extends Controller
     {
         /** @noinspection SpellCheckingInspection */
         return [
-            'error' => [
-                'class' => ErrorAction::class,
-            ],
             'captcha' => [
                 'class' => CaptchaAction::class,
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,

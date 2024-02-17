@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpUnused */
 
 namespace common\services;
 
@@ -9,9 +10,14 @@ use yii\web\User;
 
 class AuthorBookService
 {
+    public function __construct(
+        protected AuthorBookRepository $authorBookRepository
+    ) {
+    }
+
     public function setAuthor(Book $book, User $user): bool
     {
-        if ((new AuthorBookRepository())->isUserOwns($user, $book)) {
+        if ($this->authorBookRepository->isUserOwns($user, $book)) {
             return true;
         }
 
@@ -21,5 +27,4 @@ class AuthorBookService
 
         return $authorBook->save();
     }
-
 }

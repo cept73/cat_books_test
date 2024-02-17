@@ -24,7 +24,7 @@ $isbnLabel = Yii::t('app', 'For example: {isbn}', [
 
 ?>
 
-<?= $this->render('_partial/go-back') ?>
+<?= $this->render('/site/_partial/go-back') ?>
 
 <div class="my-5 offset-lg-3 col-lg-6">
     <h1><?= Html::encode(Yii::t('app', 'Добавление книги')) ?></h1>

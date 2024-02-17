@@ -3,6 +3,8 @@
 /**
  * @var View $this
  * @var string $content
+ * @noinspection PhpUnhandledExceptionInspection
+ * @noinspection SpellCheckingInspection
  */
 
 use common\widgets\Alert;
@@ -25,10 +27,6 @@ $this->beginPage();
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.118.2">
-    <title>Album example · Bootstrap v5.3</title>
 </head>
 <body>
 <?php $this->beginBody() ?>
@@ -114,6 +112,7 @@ if (Yii::$app->user->isGuest) {
     $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
 }
 
+/** @noinspection DuplicatedCode */
 echo Nav::widget([
     'options' => ['class' => 'navbar-nav me-auto mb-2 mb-md-0'],
     'items' => $menuItems,
