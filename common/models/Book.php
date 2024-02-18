@@ -24,12 +24,12 @@ use yii\helpers\ArrayHelper;
  * @property string $isbn
  * @property string $photo_cover
  * @property string $_photo_cover_file
- * @property string $_authors
+ * @property array|string $_authors List of authors or empty string
  */
 class Book extends ActiveRecord
 {
     public ?string $_photo_cover_file = null;
-    public ?array $_authors = null;
+    public $_authors = null;
 
     /**
      * @return array
@@ -56,12 +56,12 @@ class Book extends ActiveRecord
     {
         return [
             [['title', 'year_publish', 'description', 'isbn'], 'required'],
-            ['title', 'match', 'pattern' => MatchHelper::bookTitle(), 'message' => Yii::t('app', 'wrong')],
+            ['title', 'string'],
             ['year_publish', 'integer', 'min' => 1900, 'max' => date('Y')],
             ['photo_cover', 'string'],
             [['isbn'], 'k-isbn'],
             ['isbn', 'trim'],
-            ['isbn', 'unique', 'message'=>'Book with this {attribute} already exists'],
+            ['isbn', 'unique', 'message' => 'Book with this {attribute} already exists'],
             [
                 '_photo_cover_file',
                 'file',

@@ -115,3 +115,7 @@ a.desc:after {
 .select2-container--krajee-bs5 .select2-selection, .select2-container--krajee-bs5 .select2-selection {
     background: transparent !important;
 }
+
+.help-block {
+    color: coral;
+}

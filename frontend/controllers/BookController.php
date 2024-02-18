@@ -145,7 +145,9 @@ class BookController extends BaseController
                 return $this->redirect(UrlHelper::getBookViewUrl($book));
             }
 
-            Yii::$app->session->setFlash('error', Yii::t('app', 'There was an error sending your message'));
+                Yii::$app->session->setFlash('error', Yii::t('app', 'There was an error sending your message: {error}', [
+                    'error' => json_encode($book->errors)
+                ]));
         }
 
         $randomIsbn13Number = IsbnHelper::convertToISBN13((new Generator())->isbn13());

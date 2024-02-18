@@ -8,9 +8,4 @@ class MatchHelper
     {
         return '/^[a-zA-Zа-яА-Я]+$/';
     }
-
-    public static function bookTitle(): string
-    {
-        return '/^[a-zA-Zа-яА-Я,! ]+$/';
-    }
 }

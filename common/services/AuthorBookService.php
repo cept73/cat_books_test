@@ -21,20 +21,22 @@ class AuthorBookService
     {
         $transaction = Yii::$app->db->beginTransaction();
 
-        //try {
+        try {
             AuthorBook::deleteAll(['book_id' => $book->id]);
-            foreach ($book->_authors as $authorId) {
-                $authorBook = new AuthorBook();
-                $authorBook->author_id = $authorId;
-                $authorBook->book_id = $book->id;
+            if (!empty($book->_authors)) {
+                foreach ($book->_authors as $authorId) {
+                    $authorBook = new AuthorBook();
+                    $authorBook->author_id = $authorId;
+                    $authorBook->book_id = $book->id;
 
-                $authorBook->save();
+                    $authorBook->save();
+                }
             }
-        /*} catch (Throwable) {
+        } catch (Throwable) {
             $transaction->rollBack();
 
             return false;
-        }*/
+        }
 
         $transaction->commit();
         return true;
