@@ -8,6 +8,7 @@
 use common\helpers\RbacPermissionHelper;
 use common\helpers\UrlHelper;
 use common\models\Book;
+use common\services\RbacService;
 use yii\web\View;
 
 $this->title = 'Pet Books';
@@ -17,7 +18,7 @@ $this->title = 'Pet Books';
             <h1 class="display-4">Welcome to Books Store!</h1>
             <p class="fs-5 fw-light">Welcome to Books Store</p>
 
-            <?php if (Yii::$app->user->can(RbacPermissionHelper::CREATE_BOOK)) : ?>
+            <?php if (RbacService::isUserCan(RbacPermissionHelper::CREATE_BOOK)) : ?>
                 <a class="btn btn-primary btn-lg" href="<?= UrlHelper::getBookCreateUrl() ?>">
                     <?= Yii::t('app', 'Add book') ?>
                 </a>

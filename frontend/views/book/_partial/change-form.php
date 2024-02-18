@@ -1,4 +1,5 @@
-<?php /** @noinspection PhpUnhandledExceptionInspection */
+<?php
+/** @noinspection PhpUnhandledExceptionInspection */
 
 /**
  * @var Book $book
@@ -6,6 +7,7 @@
  * @var array $authorsList
  */
 
+use common\facades\FileFacade;
 use common\models\Book;
 use kartik\file\FileInput;
 use kartik\select2\Select2;
@@ -25,13 +27,33 @@ use yii\widgets\ActiveForm;
 <?= $form->field($book, 'isbn')->textInput()->hint($isbnLabel) ?>
 
 <?= $form->field($book, '_photo_cover_file')->widget(FileInput::class, [
-    'options' => ['multiple' => false, 'accept' => 'image/*'],
+    'options' => [
+        'multiple' => false,
+        'accept' => 'image/*',
+    ],
+    'pluginOptions' => [
+        'initialPreview' => [$book->photo_cover],
+        'initialPreviewAsData' => true,
+        'initialPreviewConfig' => [
+            ['caption' => FileFacade::getShortFileName($book->photo_cover)],
+        ],
+        'overwriteInitial' => false,
+        'maxFileSize' => 4096,
+        'showPreview' => true,
+        'showCaption' => true,
+        'showRemove' => true,
+        'showUpload' => false,
+    ]
 ]) ?>
 
 <?= $form->field($book, '_authors')->widget(Select2::class, [
     'data' => $authorsList,
     'language' => 'ru',
-    'options' => ['multiple' => true, 'placeholder' => 'Выберите авторов'],
+    'options' => [
+        'multiple' => true,
+        'placeholder' => 'Выберите авторов',
+        'value' => $book->authorsIds(),
+    ],
     'pluginOptions' => [
         'allowClear' => true
     ]

@@ -2,8 +2,10 @@
 
 namespace common\models;
 
+use common\helpers\MatchHelper;
 use Yii;
 use yii\db\ActiveRecord;
+use yii\helpers\StringHelper;
 
 /**
  * @property int $id
@@ -27,12 +29,15 @@ class Author extends ActiveRecord
     {
         return [
             [['first_name', 'middle_name', 'last_name'], 'required'],
+            [['first_name', 'last_name'], 'match', 'pattern' => MatchHelper::onlyAlpha(),
+                'message' => \Yii::t('app', 'can only contain alphabetic characters')
+            ],
             // TODO: Добавить ограничения, в т.ч. по размерам значений
         ];
     }
 
     public function getFullName(): string
     {
-        return $this->last_name . ' ' . $this->middle_name . ' ' . $this->first_name;
+        return $this->last_name . ' ' . $this->first_name;
     }
 }

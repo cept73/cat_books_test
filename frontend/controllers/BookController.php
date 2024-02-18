@@ -12,10 +12,12 @@ use common\models\Book;
 use common\repositories\AuthorRepository;
 use common\repositories\BookRepository;
 use common\services\AuthorBookService;
+use common\services\RbacService;
 use Faker\Generator;
 use Throwable;
 use Yii;
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\db\StaleObjectException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -33,6 +35,7 @@ class BookController extends BaseController
         return $this->render('view', [
             'book' => $book,
             'backUrl' => UrlHelper::getHomePage(),
+            'canSubscribe' => RbacService::isUserCan(RbacPermissionHelper::SUBSCRIBE_AUTHOR)
         ]);
     }
 
@@ -45,8 +48,7 @@ class BookController extends BaseController
     {
         $book = new Book();
 
-        $currentUser = Yii::$app->user;
-        if (!$currentUser->can(RbacPermissionHelper::CREATE_BOOK)) {
+        if (!RbacService::isUserCan(RbacPermissionHelper::CREATE_BOOK)) {
             throw new AccessDeniedException();
         }
 
@@ -64,8 +66,7 @@ class BookController extends BaseController
     {
         $book = $this->getBookByPathOrFail($path);
 
-        $currentUser = Yii::$app->user;
-        if (!$currentUser->can(RbacPermissionHelper::getChangeBookPermission($book))) {
+        if (!RbacService::isUserCan(RbacPermissionHelper::getChangeBookPermission($book))) {
             throw new AccessDeniedException();
         }
 
@@ -115,7 +116,6 @@ class BookController extends BaseController
      * @param Book $book
      * @param string $viewFile
      * @return Response|string
-     * @throws Exception
      */
     private function changeBook(Book $book, string $viewFile): Response|string
     {
@@ -123,14 +123,13 @@ class BookController extends BaseController
         if (!empty($postData) && $book->load($postData)) {
             /** @var ?UploadedFile $uploadedFile */
             $uploadedFile = UploadedFile::getInstance($book, '_photo_cover_file');
-
             if ($book->validate()) {
                 try {
                     if ($uploadedFile) {
                         $dirName = '/assets/books/' . Yii::$app->user->id . '/';
                         $fileName = FileFacade::uploadFileTo($uploadedFile, "@frontend/web$dirName");
 
-                        $book->_photo_cover = $dirName . $fileName;
+                        $book->photo_cover = $dirName . $fileName;
                     }
 
                     $book->save();

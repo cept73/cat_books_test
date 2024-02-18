@@ -7,4 +7,5 @@ return [
     'book/<path>' => 'book/view',
     'book/<path>/<action>' => 'book/<action>',
     'site/<action>' => 'site/<action>',
+    'ajax/<action>' => 'ajax/<action>',
 ];

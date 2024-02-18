@@ -3,6 +3,7 @@
 
 namespace console\seeder\tables;
 
+use common\helpers\FakerHelper;
 use diecoding\seeder\TableSeeder;
 use common\models\Author;
 
@@ -22,10 +23,12 @@ class AuthorTableSeeder extends TableSeeder
     {
         for ($count = 0; $count < self::COUNT; $count++) {
             $author = new Author();
+            $gender = FakerHelper::randomGender();
+
             $author->setAttributes([
-                'first_name' => $this->faker->firstName,
+                'first_name' => $this->faker->firstName($gender),
 				'middle_name' => strtoupper($this->faker->randomLetter()) . '.',
-				'last_name' => $this->faker->lastName,
+				'last_name' => $this->faker->lastName($gender),
             ]);
 
             if (!$author->validate()) {

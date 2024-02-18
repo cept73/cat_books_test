@@ -4,6 +4,7 @@
 namespace common\models;
 
 use common\exceptions\AccessDeniedException;
+use common\helpers\MatchHelper;
 use common\helpers\RbacPermissionHelper;
 use common\services\RbacService;
 use Exception;
@@ -12,6 +13,7 @@ use yii\base\InvalidConfigException;
 use yii\behaviors\SluggableBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * @property int $id
@@ -20,7 +22,8 @@ use yii\db\ActiveRecord;
  * @property int $year_publish
  * @property string $description
  * @property string $isbn
- * @property string $_photo_cover
+ * @property string $photo_cover
+ * @property string $_photo_cover_file
  * @property string $_authors
  */
 class Book extends ActiveRecord
@@ -53,6 +56,7 @@ class Book extends ActiveRecord
     {
         return [
             [['title', 'year_publish', 'description', 'isbn'], 'required'],
+            ['title', 'match', 'pattern' => MatchHelper::bookTitle(), 'message' => \Yii::t('app', 'wrong')],
             ['year_publish', 'integer', 'min' => 1900, 'max' => date('Y')],
             ['photo_cover', 'string'],
             [['isbn'], 'k-isbn'],
@@ -91,10 +95,7 @@ class Book extends ActiveRecord
      */
     public function beforeSave($insert): bool
     {
-        if (
-            !$this->isNewRecord
-            && !Yii::$app->user->can(RbacPermissionHelper::getChangeBookPermission($this))
-        ) {
+        if (!$this->isNewRecord && !RbacService::isUserCan(RbacPermissionHelper::getChangeBookPermission($this))) {
             throw new AccessDeniedException();
         }
 
@@ -118,8 +119,7 @@ class Book extends ActiveRecord
      */
     public function beforeDelete(): bool
     {
-        $currentUser = Yii::$app->user;
-        if (!$currentUser->can(RbacPermissionHelper::getChangeBookPermission($this))) {
+        if (!RbacService::isUserCan(RbacPermissionHelper::getChangeBookPermission($this))) {
             throw new AccessDeniedException();
         }
 
@@ -131,7 +131,7 @@ class Book extends ActiveRecord
     /**
      * @throws InvalidConfigException
      */
-    public function authors(): ActiveQuery
+    public function authorsQuery(): ActiveQuery
     {
         return $this
             ->hasMany(Author::class, ['id' => 'author_id'])
@@ -139,11 +139,28 @@ class Book extends ActiveRecord
     }
 
     /**
+     * @return Author[]
+     * @throws InvalidConfigException
+     */
+    public function authors(): array
+    {
+        return $this->authorsQuery()->all();
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function authorsIds(): array
+    {
+        return ArrayHelper::getColumn($this->authors(), 'id');
+    }
+
+    /**
      * @throws InvalidConfigException
      */
     public function getAuthorsLabel(): string
     {
-        $authorsList = $this->authors()->select('author.last_name')->column();
+        $authorsList = $this->authorsQuery()->select('author.last_name')->column();
 
         return implode(', ', $authorsList);
     }

@@ -11,21 +11,15 @@ class BookService
 {
     public static function getActionsList(Book $book): array
     {
-        $currentUser = Yii::$app->user;
-
         $buttonsRights = [
             'view' => RbacPermissionHelper::VIEW_BOOK,
             'edit' => RbacPermissionHelper::getChangeBookPermission($book),
             'delete' => RbacPermissionHelper::getChangeBookPermission($book),
-            'subscribe' => RbacPermissionHelper::SUBSCRIBE_AUTHOR
         ];
 
         $buttons = [];
         foreach ($buttonsRights as $buttonAction => $buttonPermission) {
-            $isButtonAllowed = $currentUser->can($buttonPermission)
-                || ($currentUser->isGuest && in_array($buttonPermission, RbacPermissionHelper::LIST_FOR_GUEST));
-
-            if ($isButtonAllowed) {
+            if (RbacService::isUserCan($buttonPermission)) {
                 $buttons[$buttonAction] = UrlHelper::getBookActionUrl($buttonAction, $book);
             }
         }

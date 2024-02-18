@@ -12,7 +12,6 @@
 
 use common\models\Book;
 use yii\web\View;
-use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 
 $this->title = Yii::t('app', 'Изменение книги');

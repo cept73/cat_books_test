@@ -32,8 +32,22 @@ class RbacService
     public function createPermissionToChangeBook($book, $userId): void
     {
         $authManager = Yii::$app->authManager;
-        $permissionToChangeThisBook = $authManager->createPermission(RbacPermissionHelper::getChangeBookPermission($book));
+
+        $changeThisBookPermission = RbacPermissionHelper::getChangeBookPermission($book);
+        $permissionToChangeThisBook = $authManager->getPermission($changeThisBookPermission)
+            ?: $authManager->createPermission($changeThisBookPermission);
         $authManager->add($permissionToChangeThisBook);
         $authManager->assign($permissionToChangeThisBook, $userId);
+    }
+
+    public static function isUserCan(string $permission): bool
+    {
+        $user = Yii::$app->user;
+
+        if (in_array($permission, RbacPermissionHelper::LIST_FOR_GUEST)) {
+            return $user->isGuest || $user->can($permission);
+        }
+
+        return $user->can($permission);
     }
 }

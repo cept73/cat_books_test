@@ -22,4 +22,11 @@ class FileFacade
 
         return $fileName;
     }
+
+    public static function getShortFileName($uploadedPath)
+    {
+        $pathInfo = pathinfo($uploadedPath);
+
+        return $pathInfo['filename'] ?? $uploadedPath;
+    }
 }
