@@ -4,6 +4,7 @@ namespace common\services;
 
 use common\factories\RbacFactory;
 use common\helpers\RbacPermissionHelper;
+use common\models\Book;
 use Yii;
 use yii\base\Exception;
 use yii\rbac\Role;
@@ -29,14 +30,15 @@ class RbacService
     /**
      * @throws \Exception
      */
-    public function createPermissionToChangeBook($book, $userId): void
+    public function createPermissionToChangeBook(Book $book, int $userId): void
     {
         $authManager = Yii::$app->authManager;
-
         $changeThisBookPermission = RbacPermissionHelper::getChangeBookPermission($book);
-        $permissionToChangeThisBook = $authManager->getPermission($changeThisBookPermission)
-            ?: $authManager->createPermission($changeThisBookPermission);
-        $authManager->add($permissionToChangeThisBook);
+        $permissionToChangeThisBook = $authManager->getPermission($changeThisBookPermission);
+        if ($permissionToChangeThisBook === null) {
+            $permissionToChangeThisBook = $authManager->createPermission($changeThisBookPermission);
+            $authManager->add($permissionToChangeThisBook);
+        }
         $authManager->assign($permissionToChangeThisBook, $userId);
     }
 

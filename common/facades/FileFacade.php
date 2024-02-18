@@ -6,7 +6,7 @@ class FileFacade
 {
     public static function getShortFileName($uploadedPath)
     {
-        $pathInfo = pathinfo($uploadedPath);
+        $pathInfo = $uploadedPath ? pathinfo($uploadedPath) : [];
 
         return $pathInfo['filename'] ?? $uploadedPath;
     }

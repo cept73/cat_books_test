@@ -4,7 +4,6 @@
 namespace frontend\controllers;
 
 use common\exceptions\AccessDeniedException;
-use common\facades\FileFacade;
 use common\helpers\IsbnHelper;
 use common\helpers\RbacPermissionHelper;
 use common\helpers\UrlHelper;
@@ -146,7 +145,7 @@ class BookController extends BaseController
                 return $this->redirect(UrlHelper::getBookViewUrl($book));
             }
 
-            Yii::$app->session->setFlash('error', 'There was an error sending your message.');
+            Yii::$app->session->setFlash('error', Yii::t('app', 'There was an error sending your message'));
         }
 
         $randomIsbn13Number = IsbnHelper::convertToISBN13((new Generator())->isbn13());

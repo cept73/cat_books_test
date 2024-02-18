@@ -21,7 +21,7 @@ class AuthorBookService
     {
         $transaction = Yii::$app->db->beginTransaction();
 
-        try {
+        //try {
             AuthorBook::deleteAll(['book_id' => $book->id]);
             foreach ($book->_authors as $authorId) {
                 $authorBook = new AuthorBook();
@@ -30,11 +30,11 @@ class AuthorBookService
 
                 $authorBook->save();
             }
-        } catch (Throwable) {
+        /*} catch (Throwable) {
             $transaction->rollBack();
 
             return false;
-        }
+        }*/
 
         $transaction->commit();
         return true;
