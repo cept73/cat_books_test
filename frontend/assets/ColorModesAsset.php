@@ -2,15 +2,17 @@
 
 namespace frontend\assets;
 
+use common\traits\AssetFilesModifiedAtTrait;
 use yii\web\AssetBundle;
 use yii\web\View;
-use yii\web\YiiAsset;
 
 /**
  * Main frontend application asset bundle.
  */
 class ColorModesAsset extends AssetBundle
 {
+    use AssetFilesModifiedAtTrait;
+
     public $basePath = '@webroot';
 
     public $baseUrl = '@web';

@@ -2,6 +2,7 @@
 
 namespace frontend\assets;
 
+use common\traits\AssetFilesModifiedAtTrait;
 use yii\web\AssetBundle;
 
 /**
@@ -9,6 +10,8 @@ use yii\web\AssetBundle;
  */
 class GhostErrorAsset extends AssetBundle
 {
+    use AssetFilesModifiedAtTrait;
+
     public $basePath = '@webroot';
 
     public $baseUrl = '@web';
