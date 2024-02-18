@@ -20,8 +20,13 @@ http://localhost:20080/
 
 `./init-demo-data`
 
-### To activate profile after registration without email
+### To activate profile after new user registration without email
 
 ```
 php yii user/activate {login}
 ```
+
+### To send SMS via SMSPilot
+
+- Check local `.env` file and change `SMS_PILOT_API_KEY`
+- Add to `/etc/cron`: `*\5 * * * * php /path/to/yii.php queue/send-notify`
