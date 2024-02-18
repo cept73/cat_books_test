@@ -151,8 +151,10 @@ NavBar::end();
 
 <footer class="text-body-secondary py-5">
     <div class="container">
-        <p class="float-start bg-black text-white px-2 rounded-pill">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-        <p class="float-end">
+        <p class="float-start bg-black text-white px-2 rounded-pill">
+            &copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?>
+        </p>
+        <p class="float-end bg-black text-white px-2 rounded-pill">
             <a href="#">Back to top</a>
         </p>
     </div>
