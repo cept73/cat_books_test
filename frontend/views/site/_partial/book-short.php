@@ -14,7 +14,7 @@ use common\services\BookService;
     <div class="card shadow-sm mb-5">
         <div class="card-cover">
             <a href="<?= UrlHelper::getBookViewUrl($book) ?>">
-                <img src="<?= $book->photo_cover ?>" title="<?= $book->title ?>"  alt="" class="w-100" />
+                <img src="<?= $book->photo_cover ?>" title="<?= $book->title ?>"  alt="" class="w-100 rounded" />
             </a>
         </div>
         <div class="card-body">

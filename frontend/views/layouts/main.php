@@ -135,7 +135,7 @@ NavBar::end();
 
 <main>
     <section class="py-3 text-center container">
-        <div class="album py-3 bg-body-tertiary">
+        <div class="album py-3 bg-body-tertiary rounded">
             <div class="container">
 
 <?= Breadcrumbs::widget(['links' => $this->params['breadcrumbs'] ?? []]) ?>
@@ -151,7 +151,7 @@ NavBar::end();
 
 <footer class="text-body-secondary py-5">
     <div class="container">
-        <p class="float-start">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
+        <p class="float-start bg-black text-white px-2 rounded-pill">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
         <p class="float-end">
             <a href="#">Back to top</a>
         </p>

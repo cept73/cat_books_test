@@ -19,7 +19,7 @@ $this->title = 'Pet Books';
             <p class="fs-5 fw-light">Welcome to Books Store</p>
 
             <?php if (RbacService::isUserCan(RbacPermissionHelper::CREATE_BOOK)) : ?>
-                <a class="btn btn-primary btn-lg" href="<?= UrlHelper::getBookCreateUrl() ?>">
+                <a class="btn btn-primary btn-lg rounded-5 px-4" href="<?= UrlHelper::getBookCreateUrl() ?>">
                     <?= Yii::t('app', 'Add book') ?>
                 </a>
             <?php endif; ?>

@@ -112,6 +112,10 @@ a.desc:after {
     max-height: 200px;
 }
 
+body {
+    background: url(https://oir.mobi/uploads/posts/2021-03/1616562434_36-p-fon-kotiki-40.jpg) round;
+}
+
 .select2-container--krajee-bs5 .select2-selection, .select2-container--krajee-bs5 .select2-selection {
     background: transparent !important;
 }
