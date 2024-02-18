@@ -27,7 +27,7 @@ $this->title = Yii::t('app', 'Отчет по авторам');
                 <?php foreach ($authors as $rank => $author) : ?>
                 <tr>
                     <th scope="row"><?= $rank + 1 ?></th>
-                    <td><?= $author->getFullName() ?></td>
+                    <td><?= $author ? $author->getFullName() : '??' ?></td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
