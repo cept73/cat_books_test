@@ -12,12 +12,12 @@ use common\models\Book;
 use common\repositories\AuthorRepository;
 use common\repositories\BookRepository;
 use common\services\AuthorBookService;
+use common\services\FileService;
 use common\services\RbacService;
 use Faker\Generator;
 use Throwable;
 use Yii;
 use yii\base\Exception;
-use yii\base\InvalidConfigException;
 use yii\db\StaleObjectException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -127,7 +127,7 @@ class BookController extends BaseController
                 try {
                     if ($uploadedFile) {
                         $dirName = '/assets/books/' . Yii::$app->user->id . '/';
-                        $fileName = FileFacade::uploadFileTo($uploadedFile, "@frontend/web$dirName");
+                        $fileName = (new FileService())->uploadFileTo($uploadedFile, "@frontend/web$dirName");
 
                         $book->photo_cover = $dirName . $fileName;
                     }

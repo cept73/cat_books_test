@@ -18,7 +18,7 @@ class AuthorBook extends ActiveRecord
         if ($insert) {
             $subscribersPhones = (new SubscriberRepository())->getPhonesSubscribedToAuthorId($this->author_id);
             if (!empty($subscribersPhones)) {
-                (new UserNotificationQueueFactory())->addAuthorSubscribersPhones($this->author_id, $subscribersPhones);
+                (new UserNotificationQueueFactory())->createAuthorSubscribersPhones($this->author_id, $subscribersPhones);
             }
         }
 

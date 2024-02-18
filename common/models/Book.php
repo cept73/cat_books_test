@@ -56,7 +56,7 @@ class Book extends ActiveRecord
     {
         return [
             [['title', 'year_publish', 'description', 'isbn'], 'required'],
-            ['title', 'match', 'pattern' => MatchHelper::bookTitle(), 'message' => \Yii::t('app', 'wrong')],
+            ['title', 'match', 'pattern' => MatchHelper::bookTitle(), 'message' => Yii::t('app', 'wrong')],
             ['year_publish', 'integer', 'min' => 1900, 'max' => date('Y')],
             ['photo_cover', 'string'],
             [['isbn'], 'k-isbn'],

@@ -2,6 +2,7 @@
 
 namespace common\services;
 
+use Exception;
 use linslin\yii2\curl\Curl;
 
 class SmsPilotService
@@ -15,7 +16,7 @@ class SmsPilotService
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function sendOne(string $message, string $phoneNumber): array
     {

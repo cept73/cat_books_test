@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpUnused */
 
 use yii\db\Migration;
 

@@ -13,6 +13,7 @@ use yii\console\Controller;
 class RbacController extends Controller
 {
     /**
+     * Initialize permissions
      * @throws Exception
      */
     public function actionInit()

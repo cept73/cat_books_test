@@ -45,9 +45,4 @@ class UserController extends Controller
 
         print "User $login is created and activated" . PHP_EOL;
     }
-
-    public function actionSetAuthorRole(string $userName)
-    {
-
-    }
 }

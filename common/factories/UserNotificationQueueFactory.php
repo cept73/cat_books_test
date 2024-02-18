@@ -4,14 +4,10 @@ namespace common\factories;
 
 use common\models\Author;
 use common\models\UserNotificationQueue;
-use common\repositories\UserNotificationQueueRepository;
-use common\services\SmsPilotService;
-use Exception;
-use Yii;
 
 class UserNotificationQueueFactory
 {
-    public function addAuthorSubscribersPhones(int $authorId, array $phones): void
+    public function createAuthorSubscribersPhones(int $authorId, array $phones): void
     {
         foreach ($phones as $phone) {
             $userNotificationQueueTask = new UserNotificationQueue();

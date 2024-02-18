@@ -18,13 +18,6 @@ class UserNotificationQueue extends ActiveRecord
     public const STATUS_WAITING = 'waiting';
     public const STATUS_SENT = 'sent';
 
-    public function getObject(): ?ActiveRecord
-    {
-        /** @var ActiveRecord $class */
-        $class = new $this->object_class;
-        return $class::findOne($this->object_id);
-    }
-
     public function safeAttributes(): array
     {
         return ['object_class', 'object_id', 'to_phone', 'status'];
