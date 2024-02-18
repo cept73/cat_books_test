@@ -11,7 +11,7 @@ class FakerHelper
         $zeroOrOne = rand(0, 1);
 
         return [
-            Person::GENDER_FEMALE,
+            Person::GENDER_MALE,
             Person::GENDER_FEMALE
         ][$zeroOrOne];
     }
