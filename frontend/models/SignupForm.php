@@ -4,6 +4,7 @@ namespace frontend\models;
 
 use common\factories\UserFactory;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
 use common\models\User;
 
@@ -43,6 +44,7 @@ class SignupForm extends Model
      * Signs user up.
      *
      * @return bool whether the creating new account was successful and email was sent
+     * @throws InvalidConfigException
      */
     public function signup()
     {
@@ -50,7 +52,7 @@ class SignupForm extends Model
             return null;
         }
 
-        $user = (new UserFactory())->createByLoginPasswordEmail($this->username, $this->password, $this->email);
+        $user = Yii::createObject(UserFactory::class)->createByLoginPasswordEmail($this->username, $this->password, $this->email);
 
         return $user->save() && $this->sendEmail($user);
     }

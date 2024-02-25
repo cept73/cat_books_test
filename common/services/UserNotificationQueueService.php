@@ -14,7 +14,7 @@ class UserNotificationQueueService
      */
     public function sendNext(): ?UserNotificationQueue
     {
-        $userNotificationQueueTask = (new UserNotificationQueueRepository())->nextNewAuthorsBookSubscribedPhoneTask();
+        $userNotificationQueueTask = Yii::createObject(UserNotificationQueueRepository::class)->nextNewAuthorsBookSubscribedPhoneTask();
         if (empty($userNotificationQueueTask)) {
             return null;
         }
@@ -23,7 +23,7 @@ class UserNotificationQueueService
             'author' => $userNotificationQueueTask->object_id
         ]);
 
-        [$response, $code] = (new SmsPilotService())->sendOne($message, $userNotificationQueueTask->to_phone);
+        [$response, $code] = Yii::createObject(SmsPilotService::class)->sendOne($message, $userNotificationQueueTask->to_phone);
 
         $userNotificationQueueTask->response_text = $response;
         $userNotificationQueueTask->response_code = $code;

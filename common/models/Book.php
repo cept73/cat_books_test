@@ -4,7 +4,6 @@
 namespace common\models;
 
 use common\exceptions\AccessDeniedException;
-use common\helpers\MatchHelper;
 use common\helpers\RbacPermissionHelper;
 use common\services\RbacService;
 use Exception;
@@ -29,7 +28,7 @@ use yii\helpers\ArrayHelper;
 class Book extends ActiveRecord
 {
     public ?string $_photo_cover_file = null;
-    public $_authors = null;
+    public ?array $_authors = null;
 
     /**
      * @return array
@@ -108,7 +107,7 @@ class Book extends ActiveRecord
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            (new RbacService())->createPermissionToChangeBook($this, Yii::$app->user->id);
+            Yii::createObject(RbacService::class)->createPermissionToChangeBook($this, Yii::$app->user->id);
         }
 
         parent::afterSave($insert, $changedAttributes);

@@ -17,6 +17,7 @@ use Faker\Generator;
 use Throwable;
 use Yii;
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\db\StaleObjectException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -25,7 +26,7 @@ use yii\web\UploadedFile;
 class BookController extends BaseController
 {
     /**
-     * @throws NotFoundHttpException
+     * @throws NotFoundHttpException|InvalidConfigException
      */
     public function actionView(string $path): string
     {
@@ -87,9 +88,12 @@ class BookController extends BaseController
         return $this->redirect(UrlHelper::getHomePage());
     }
 
+    /**
+     * @throws InvalidConfigException
+     */
     public function actionReport(): string
     {
-        $authors = (new AuthorBookService())->getReport();
+        $authors = Yii::createObject(AuthorBookService::class)->getReport();
 
         return $this->render('report', [
             'authors' => $authors,
@@ -99,12 +103,13 @@ class BookController extends BaseController
 
     /**
      * @throws NotFoundHttpException
+     * @throws InvalidConfigException
      */
     private function getBookByPathOrFail(string $path): Book
     {
         $id = UrlHelper::getPathIdentifier($path);
 
-        if (empty($id) || ($book = (new BookRepository())->getBookById($id)) === null) {
+        if (empty($id) || ($book = Yii::createObject(BookRepository::class)->getBookById($id)) === null) {
             throw new NotFoundHttpException('Book not found');
         }
 
@@ -115,6 +120,7 @@ class BookController extends BaseController
      * @param Book $book
      * @param string $viewFile
      * @return Response|string
+     * @throws InvalidConfigException
      */
     private function changeBook(Book $book, string $viewFile): Response|string
     {
@@ -126,13 +132,13 @@ class BookController extends BaseController
                 try {
                     if ($uploadedFile) {
                         $dirName = '/assets/books/' . Yii::$app->user->id . '/';
-                        $fileName = (new FileService())->uploadFileTo($uploadedFile, "@frontend/web$dirName");
+                        $fileName = Yii::createObject(FileService::class)->uploadFileTo($uploadedFile, "@frontend/web$dirName");
 
                         $book->photo_cover = $dirName . $fileName;
                     }
 
                     $book->save();
-                    (new AuthorBookService())->updateAuthors($book);
+                    Yii::createObject(AuthorBookService::class)->updateAuthors($book);
 
                     Yii::$app->session->setFlash('success', 'Книга сохранена успешно');
                 } catch (Throwable $exception) {
@@ -152,7 +158,7 @@ class BookController extends BaseController
 
         $randomIsbn13Number = IsbnHelper::convertToISBN13((new Generator())->isbn13());
 
-        $authorsList = (new AuthorRepository())->getAuthorsList();
+        $authorsList = Yii::createObject(AuthorRepository::class)->getAuthorsList();
 
         return $this->render($viewFile, [
             'book' => $book,

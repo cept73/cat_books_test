@@ -11,6 +11,7 @@ use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
 use yii\base\InvalidArgumentException;
+use yii\base\InvalidConfigException;
 use yii\captcha\CaptchaAction;
 use yii\web\BadRequestHttpException;
 use yii\filters\VerbFilter;
@@ -76,11 +77,12 @@ class SiteController extends BaseController
      * Displays homepage.
      *
      * @return string
+     * @throws InvalidConfigException
      */
     public function actionIndex()
     {
         return $this->render('index', [
-            'books' => (new BookRepository())->getActiveBooks(),
+            'books' => Yii::createObject(BookRepository::class)->getActiveBooks(),
             'isLoggedIn' => !Yii::$app->user->isGuest
         ]);
     }
@@ -157,6 +159,7 @@ class SiteController extends BaseController
      * Signs user up.
      *
      * @return string|Response
+     * @throws InvalidConfigException
      */
     public function actionSignup()
     {

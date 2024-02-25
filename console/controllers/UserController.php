@@ -6,6 +6,8 @@ namespace console\controllers;
 use common\factories\UserFactory;
 use common\models\User;
 use common\repositories\UserRepository;
+use Yii;
+use yii\base\InvalidConfigException;
 use yii\console\Controller;
 
 class UserController extends Controller
@@ -28,15 +30,16 @@ class UserController extends Controller
 
     /**
      * Create active user by login password email
+     * @throws InvalidConfigException
      */
     public function actionCreate(string $login, string $password, string $email)
     {
-        if ((new UserRepository())->getUserByLogin($login) !== null) {
+        if (Yii::createObject(UserRepository::class)->getUserByLogin($login) !== null) {
             print "User $login already exists" . PHP_EOL;
             return;
         }
 
-        $user = (new UserFactory())->createByLoginPasswordEmail($login, $password, $email);
+        $user = Yii::createObject(UserFactory::class)->createByLoginPasswordEmail($login, $password, $email);
         $user->status = User::STATUS_ACTIVE;
 
         if (!$user->save()) {

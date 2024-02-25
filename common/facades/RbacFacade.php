@@ -3,6 +3,7 @@
 namespace common\facades;
 
 use common\services\RbacService;
+use Yii;
 use yii\base\Exception;
 use yii\rbac\Role;
 
@@ -17,6 +18,6 @@ class RbacFacade
      */
     public static function createRoleWithPermissions(string $roleName, array $rolePermissionsList, array $allPermissionsList): Role
     {
-        return (new RbacService())->createRoleWithPermissions($roleName, $rolePermissionsList, $allPermissionsList);
+        return Yii::createObject(RbacService::class)->createRoleWithPermissions($roleName, $rolePermissionsList, $allPermissionsList);
     }
 }

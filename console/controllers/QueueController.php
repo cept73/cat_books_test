@@ -5,6 +5,7 @@ namespace console\controllers;
 
 use common\services\UserNotificationQueueService;
 use Exception;
+use Yii;
 use yii\console\Controller;
 
 class QueueController extends Controller
@@ -15,7 +16,7 @@ class QueueController extends Controller
      */
     public function actionSendNotify()
     {
-        $userNotificationQueue = (new UserNotificationQueueService())->sendNext();
+        $userNotificationQueue = Yii::createObject(UserNotificationQueueService::class)->sendNext();
 
         if ($userNotificationQueue === null) {
             return;

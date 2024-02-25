@@ -4,6 +4,8 @@ namespace common\models;
 
 use common\factories\UserNotificationQueueFactory;
 use common\repositories\SubscriberRepository;
+use Yii;
+use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 
 /**
@@ -13,12 +15,15 @@ use yii\db\ActiveRecord;
  */
 class AuthorBook extends ActiveRecord
 {
+    /**
+     * @throws InvalidConfigException
+     */
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            $subscribersPhones = (new SubscriberRepository())->getPhonesSubscribedToAuthorId($this->author_id);
+            $subscribersPhones = Yii::createObject(SubscriberRepository::class)->getPhonesSubscribedToAuthorId($this->author_id);
             if (!empty($subscribersPhones)) {
-                (new UserNotificationQueueFactory())->createAuthorSubscribersPhones($this->author_id, $subscribersPhones);
+                Yii::createObject(UserNotificationQueueFactory::class)->createAuthorSubscribersPhones($this->author_id, $subscribersPhones);
             }
         }
 

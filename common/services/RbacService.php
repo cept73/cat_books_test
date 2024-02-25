@@ -16,7 +16,7 @@ class RbacService
      */
     public function createRoleWithPermissions(string $roleName, array $rolePermissionsList, array $allPermissionsList): Role
     {
-        $role = (new RbacFactory())->createRoleByName($roleName);
+        $role = Yii::createObject(RbacFactory::class)->createRoleByName($roleName);
         $permissions = array_intersect_key($allPermissionsList, array_flip($rolePermissionsList));
         $authManager = Yii::$app->authManager;
 
