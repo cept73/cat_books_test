@@ -2,7 +2,7 @@
 
 <img src="screen1.png" alt="">
 
-### Live demo: https://pet-books.code73.ru
+### Live demo: https://pet-books.code73.ru (admin 123456)
 
 ## Project description (ru)
 
@@ -38,6 +38,10 @@ http://localhost:20080/
 `./init`
 
 `./init-roles-and-users`
+
+### Login Password:
+
+```admin 123456```
 
 ### To seed demo-data:
 
