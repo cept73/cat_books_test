@@ -2,6 +2,8 @@
 
 <img src="screen1.png" alt="">
 
+### Live demo: https://pet-books.code73.ru
+
 ## Installation notes
 
 ### To run in docker:
